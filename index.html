@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="referrer" content="no-referrer">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Mon Programme">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon programme</title>
+    <style>
+        :root { --bg-color: #FFFAE9; --text-color: #123C5A; --highlight-color: #F28C28; --card-bg: #FFFFFF; --card-border: rgba(18, 60, 90, 0.12); --muted: #52514e; --grid: #e5e1d3; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { overflow-x: hidden; width: 100%; touch-action: pan-y; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding: 16px; max-width: 480px; margin: 0 auto; line-height: 1.4; }
+        .container { display: flex; flex-direction: column; gap: 20px; padding-bottom: 32px; }
+        header { text-align: center; padding-top: 8px; }
+        .badge-top { display: inline-block; background-color: var(--highlight-color); color: white; padding: 4px 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border-radius: 9999px; margin-bottom: 8px; }
+        h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: 4px; }
+        h2 { font-size: 1.1rem; margin-bottom: 4px; }
+        .subtitle { font-size: 0.875rem; font-weight: 500; opacity: 0.8; }
+        .card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; }
+        .card-hr { border-left: 4px solid var(--highlight-color); display: flex; justify-content: space-between; align-items: center; }
+        .hr-title { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--highlight-color); margin-bottom: 2px; }
+        .hr-value { font-size: 1.125rem; font-weight: 700; }
+        .focus-banner { background-color: rgba(242, 140, 40, 0.1); border: 1px solid rgba(242, 140, 40, 0.4); border-radius: 12px; padding: 12px; font-size: 0.8rem; }
+        .focus-title { font-weight: 700; color: var(--highlight-color); margin-bottom: 4px; font-size: 0.8rem; }
+        .session-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(18, 60, 90, 0.08); padding-bottom: 8px; margin-bottom: 12px; }
+        .session-tag { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--highlight-color); }
+        .rpe-badge { font-size: 0.75rem; font-weight: 600; background-color: var(--bg-color); border: 1px solid var(--highlight-color); padding: 2px 8px; border-radius: 4px; }
+        .session-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
+        .step { background-color: var(--bg-color); border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 0.8rem; white-space: pre-line; }
+        .step-label { display: block; font-weight: 700; margin-bottom: 2px; }
+        .label-orange { color: var(--highlight-color); }
+        .label-navy { color: var(--text-color); }
+        .safety-card { background-color: var(--text-color); color: white; padding: 16px; border-radius: 16px; font-size: 0.85rem; white-space: pre-line; }
+        .safety-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--highlight-color); margin-bottom: 6px; }
+
+        /* Case "Séance terminée" : grosse et facile à toucher */
+        .done-box { display: flex; align-items: center; gap: 14px; margin-top: 12px; padding: 16px; border-radius: 14px; background: var(--bg-color); border: 2px solid var(--highlight-color); cursor: pointer; font-weight: 700; font-size: 1rem; transition: background .15s, border-color .15s; user-select: none; }
+        .done-box input { width: 30px; height: 30px; accent-color: var(--highlight-color); flex-shrink: 0; }
+        .done-box.done { background: rgba(242, 140, 40, 0.15); border-color: var(--highlight-color); }
+
+        /* Ressenti après séance */
+        .ress { margin-top: 10px; }
+        .ress-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px dashed var(--highlight-color); background: transparent; color: var(--text-color); font-weight: 700; font-size: .9rem; cursor: pointer; }
+        .ress-resume { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: .82rem; background: var(--bg-color); border-radius: 10px; padding: 10px 12px; }
+        .ress-resume button { background: none; border: none; color: var(--highlight-color); font-weight: 700; font-size: .82rem; cursor: pointer; white-space: nowrap; }
+        .ress-form { background: var(--bg-color); border-radius: 12px; padding: 14px; }
+        .ress-titre { font-weight: 800; font-size: .9rem; margin-bottom: 10px; }
+        .ress-actions { display: flex; gap: 8px; margin-top: 10px; }
+        .ress-actions .btn { padding: 12px; font-size: .95rem; }
+        .btn.sec { background: transparent; color: var(--text-color); border: 1px solid var(--card-border); width: auto; padding: 12px 16px; }
+        .lecture { margin-top: 10px; font-size: .82rem; background: var(--bg-color); border-radius: 10px; padding: 10px 12px; }
+
+        .loader, .empty { text-align: center; padding: 60px 16px; font-weight: 600; opacity: .75; }
+        .btn { width: 100%; padding: 16px; border: none; border-radius: 14px; background: var(--highlight-color); color: #fff; font-size: 1.05rem; font-weight: 700; cursor: pointer; }
+        .btn:disabled { opacity: .5; }
+        .debrief p.hint, .hint { font-size: .8rem; opacity: .75; margin-bottom: 14px; }
+        .field { margin-bottom: 16px; }
+        .field label { display: flex; justify-content: space-between; font-weight: 700; font-size: .85rem; margin-bottom: 6px; }
+        .field label span { color: var(--highlight-color); }
+        .field input[type=range] { width: 100%; accent-color: var(--highlight-color); height: 32px; }
+        .field.neutre input[type=range] { opacity: .5; }
+        .scale { display: flex; justify-content: space-between; font-size: .7rem; opacity: .6; }
+        textarea { width: 100%; min-height: 100px; padding: 12px; border-radius: 12px; border: 1px solid var(--card-border); background: #fff; color: var(--text-color); font-size: 1rem; resize: vertical; }
+        .ok-box { text-align: center; font-weight: 700; padding: 8px; }
+        #toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--text-color); color: #fff; padding: 10px 18px; border-radius: 9999px; font-size: .85rem; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 10; }
+        #toast.show { opacity: 1; }
+
+        /* Progression */
+        .chart-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .78rem; color: var(--muted); margin: 8px 0; }
+        .chart-leg-item { display: inline-flex; align-items: center; gap: 4px; }
+        .chart svg { display: block; }
+        .chart-readout { font-size: .8rem; font-weight: 600; min-height: 2.4em; margin-top: 6px; }
+        .chart-toggle { background: none; border: none; color: var(--highlight-color); font-weight: 700; font-size: .8rem; cursor: pointer; padding: 6px 0; }
+        .chart table { width: 100%; border-collapse: collapse; font-size: .8rem; margin-top: 6px; }
+        .chart th, .chart td { text-align: center; padding: 6px 4px; border-bottom: 1px solid var(--grid); }
+        .chart th { font-size: .7rem; text-transform: uppercase; color: var(--muted); }
+        .assid { margin-top: 16px; }
+        .assid-titre { font-weight: 800; font-size: .85rem; margin-bottom: 8px; }
+        .assid-ligne { display: flex; align-items: center; gap: 8px; font-size: .78rem; margin-bottom: 6px; }
+        .assid-ligne .lab { width: 30px; color: var(--muted); }
+        .assid-ligne .val { width: 34px; text-align: right; font-weight: 700; }
+        .assid-piste { flex: 1; height: 8px; border-radius: 4px; background: var(--grid); overflow: hidden; }
+        .assid-barre { height: 100%; background: var(--text-color); border-radius: 4px; }
+        .week-btn { width: 100%; text-align: left; background: var(--bg-color); border: none; border-radius: 10px; padding: 12px; margin-top: 8px; font-weight: 700; font-size: .9rem; color: var(--text-color); cursor: pointer; }
+        .week-zone { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+        .week-zone[hidden] { display: none; }
+        .week-zone .card { border-color: var(--grid); }
+    </style>
+</head>
+<body>
+    <div class="container" id="app"><div class="loader">Chargement de ton programme…</div></div>
+    <div id="toast"></div>
+
+    <script>
+        const ID_FIXE = null;
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwPYz7Kmy3ZhfVyPbN-AWvAY5CcubG_FdneihNZ5c_EtghFd0cH0M1XnHzHh5alI-xS/exec';
+
+        // Identifiant : fixé par Apps Script, sinon lu dans le lien (#id ou ?id=), sinon mémorisé sur l'appareil
+        function idDepuisLien() {
+            const OK = /^p[0-9a-f]{8}$/;
+            let id = ((location.hash || '').replace(/^#/, '').split('&')[0] || new URLSearchParams(location.search).get('id') || '').trim().toLowerCase();
+            try {
+                if (OK.test(id)) localStorage.setItem('suivi_id', id);
+                else id = localStorage.getItem('suivi_id') || '';
+            } catch (e) { /* stockage indisponible : on se contente du lien */ }
+            return OK.test(id) ? id : '';
+        }
+        const ID = ID_FIXE || idDepuisLien();
+
+        // Transport : google.script.run dans Apps Script, fetch vers l'API JSON sur GitHub Pages
+        function appelerApi(fn, args) {
+            const ctrl = new AbortController();
+            const to = setTimeout(() => ctrl.abort(), 45000);
+            return fetch(API_URL, {
+                method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ fn: fn, args: args }), redirect: 'follow', credentials: 'omit', signal: ctrl.signal
+            })
+                .then(r => r.json())
+                .then(j => { if (!j || !j.ok) throw new Error((j && j.erreur) || 'Erreur serveur'); return j.data; })
+                .finally(() => clearTimeout(to));
+        }
+        function run() {
+            if (!API_URL) return google.script.run;
+            let ok = () => {}, ko = () => {};
+            const b = new Proxy({}, { get: (t, k) => {
+                if (k === 'withSuccessHandler') return f => { ok = f; return b; };
+                if (k === 'withFailureHandler') return f => { ko = f; return b; };
+                return (...args) => { appelerApi(k, args).then(ok, ko); };
+            } });
+            return b;
+        }
+        const app = document.getElementById('app');
+        const toastEl = document.getElementById('toast');
+        let nbSeances = 0;
+
+        function el(tag, cls, text) {
+            const e = document.createElement(tag);
+            if (cls) e.className = cls;
+            if (text != null && text !== '') e.textContent = text;
+            return e;
+        }
+        function toast(msg) {
+            toastEl.textContent = msg;
+            toastEl.classList.add('show');
+            setTimeout(() => toastEl.classList.remove('show'), 2500);
+        }
+        function header(badge, titre, sous) {
+            const h = el('header');
+            h.append(el('span', 'badge-top', badge), el('h1', '', titre), el('p', 'subtitle', sous));
+            return h;
+        }
+
+        /* ---------- Graphique d'évolution (douleur / fatigue / difficulté, échelle 0-10) ---------- */
+        const NS = 'http://www.w3.org/2000/svg';
+        function sv(tag, attrs) {
+            const e = document.createElementNS(NS, tag);
+            Object.keys(attrs || {}).forEach(k => e.setAttribute(k, attrs[k]));
+            return e;
+        }
+        const SERIES = [
+            { cle: 'douleur', nom: 'Douleur', couleur: '#eb6834', forme: 'cercle' },
+            { cle: 'fatigue', nom: 'Fatigue', couleur: '#2a78d6', forme: 'carre' },
+            { cle: 'difficulte', nom: 'Difficulté', couleur: '#1baf7a', forme: 'losange' }
+        ];
+        function marque(forme, x, y, couleur) {
+            const r = 4.5, st = { fill: couleur, stroke: '#ffffff', 'stroke-width': 2 };
+            if (forme === 'carre') return sv('rect', Object.assign({ x: x - r, y: y - r, width: 2 * r, height: 2 * r, rx: 1 }, st));
+            if (forme === 'losange') return sv('path', Object.assign({ d: 'M' + x + ' ' + (y - r - 1) + ' L' + (x + r + 1) + ' ' + y + ' L' + x + ' ' + (y + r + 1) + ' L' + (x - r - 1) + ' ' + y + ' Z' }, st));
+            return sv('circle', Object.assign({ cx: x, cy: y, r: r }, st));
+        }
+        function texteSvg(x, y, anchor, contenu) {
+            const t = sv('text', { x: x, y: y, 'text-anchor': anchor, 'font-size': 10, fill: '#52514e' });
+            t.textContent = contenu;
+            return t;
+        }
+        function graphique(points) {
+            const pts = points.slice(-12), n = pts.length;
+            const box = el('div', 'chart');
+
+            const leg = el('div', 'chart-legend');
+            SERIES.forEach(s => {
+                const k = sv('svg', { width: 14, height: 14, viewBox: '0 0 14 14', 'aria-hidden': 'true' });
+                k.append(marque(s.forme, 7, 7, s.couleur));
+                const it = el('span', 'chart-leg-item');
+                it.append(k, document.createTextNode(s.nom));
+                leg.append(it);
+            });
+
+            const W = 320, H = 168, L = 24, R = 24, T = 10, B = 24;
+            const X = i => n === 1 ? L + (W - L - R) / 2 : L + i * (W - L - R) / (n - 1);
+            const Y = v => T + (10 - Math.max(0, Math.min(10, v))) * (H - T - B) / 10;
+            const svg = sv('svg', { viewBox: '0 0 ' + W + ' ' + H, width: '100%', role: 'img', 'aria-label': 'Évolution de la douleur, de la fatigue et de la difficulté, semaine par semaine' });
+
+            [0, 5, 10].forEach(v => {
+                svg.append(sv('line', { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: '#e5e1d3', 'stroke-width': 1 }));
+                svg.append(texteSvg(L - 6, Y(v) + 3.5, 'end', String(v)));
+            });
+            pts.forEach((p, i) => {
+                if (n <= 8 || (n - 1 - i) % 2 === 0) svg.append(texteSvg(X(i), H - 8, 'middle', 'S' + p.semaine));
+            });
+            const guide = sv('line', { x1: 0, x2: 0, y1: T, y2: H - B, stroke: '#9b978a', 'stroke-width': 1, visibility: 'hidden' });
+            svg.append(guide);
+
+            SERIES.forEach(s => {
+                if (n > 1) svg.append(sv('polyline', {
+                    points: pts.map((p, i) => X(i) + ',' + Y(p[s.cle])).join(' '),
+                    fill: 'none', stroke: s.couleur, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round'
+                }));
+            });
+            SERIES.forEach(s => pts.forEach((p, i) => svg.append(marque(s.forme, X(i), Y(p[s.cle]), s.couleur))));
+
+            // Valeurs de la dernière semaine, écartées pour ne pas se chevaucher
+            const fins = SERIES.map(s => ({ y: Y(pts[n - 1][s.cle]), v: pts[n - 1][s.cle] })).sort((a, b) => a.y - b.y);
+            for (let i = 1; i < fins.length; i++) if (fins[i].y - fins[i - 1].y < 11) fins[i].y = fins[i - 1].y + 11;
+            fins.forEach(f => { const t = texteSvg(X(n - 1) + 9, f.y + 3.5, 'start', String(f.v)); t.setAttribute('fill', '#123C5A'); t.setAttribute('font-weight', '700'); svg.append(t); });
+
+            const readout = el('div', 'chart-readout');
+            const montrer = (i, avecGuide) => {
+                const p = pts[i];
+                readout.textContent = 'Semaine ' + p.semaine + ' · Douleur ' + p.douleur + ' · Fatigue ' + p.fatigue + ' · Difficulté ' + p.difficulte + ' · Séances ' + p.faites + '/' + p.prevues;
+                guide.setAttribute('visibility', avecGuide ? 'visible' : 'hidden');
+                guide.setAttribute('x1', X(i)); guide.setAttribute('x2', X(i));
+            };
+            const survol = ev => {
+                const r = svg.getBoundingClientRect();
+                const px = (ev.clientX - r.left) * W / r.width;
+                let i = n === 1 ? 0 : Math.round((px - L) / ((W - L - R) / (n - 1)));
+                montrer(Math.max(0, Math.min(n - 1, i)), true);
+            };
+            svg.addEventListener('pointermove', survol);
+            svg.addEventListener('pointerdown', survol);
+            svg.addEventListener('pointerleave', () => montrer(n - 1, false));
+            montrer(n - 1, false);
+
+            // Vue tableau (accessibilité et lecture exacte)
+            const tab = el('table');
+            tab.hidden = true;
+            const thead = el('tr');
+            ['Sem.', 'Douleur', 'Fatigue', 'Difficulté', 'Séances'].forEach(t => thead.append(el('th', '', t)));
+            tab.append(thead);
+            pts.forEach(p => {
+                const tr = el('tr');
+                ['S' + p.semaine, p.douleur, p.fatigue, p.difficulte, p.faites + '/' + p.prevues].forEach(v => tr.append(el('td', '', String(v))));
+                tab.append(tr);
+            });
+            const wrap = el('div');
+            wrap.append(svg);
+            const tog = el('button', 'chart-toggle', 'Voir le tableau');
+            tog.type = 'button';
+            tog.addEventListener('click', () => {
+                tab.hidden = !tab.hidden;
+                wrap.hidden = !tab.hidden;
+                tog.textContent = tab.hidden ? 'Voir le tableau' : 'Voir le graphique';
+            });
+            box.append(leg, wrap, tab, readout, tog);
+            return box;
+        }
+
+        /* ---------- Curseurs ---------- */
+        // neutre = true : la valeur reste "–" tant que le patient n'a pas touché le curseur (pas de fausse donnée)
+        function curseur(titre, bas, haut, neutre) {
+            const f = el('div', 'field' + (neutre ? ' neutre' : ''));
+            const l = el('label'), v = el('span', '', neutre ? '–' : '5');
+            l.append(el('div', '', titre), v);
+            const r = el('input');
+            r.type = 'range'; r.min = 0; r.max = 10; r.step = 1; r.value = 5;
+            let touche = !neutre;
+            const maj = () => {
+                touche = true; v.textContent = r.value; f.classList.remove('neutre');
+                if (f.onTouche) f.onTouche();
+            };
+            r.addEventListener('input', maj);
+            r.addEventListener('pointerdown', maj);
+            const sc = el('div', 'scale');
+            sc.append(el('span', '', bas), el('span', '', haut));
+            f.append(l, r, sc);
+            f.valeur = () => r.value;
+            f.touche = () => touche;
+            f.fixer = val => { r.value = val; v.textContent = val; touche = true; f.classList.remove('neutre'); };
+            return f;
+        }
+
+        /* ---------- Programme ---------- */
+        if (!ID) {
+            app.replaceChildren(el('div', 'empty', "Utilise le lien personnel que ton kiné t'a envoyé."));
+        } else {
+            run()
+                .withSuccessHandler(afficher)
+                .withFailureHandler(e => app.replaceChildren(el('div', 'empty', /inconnu/i.test(String((e && e.message) || e))
+                    ? "Lien introuvable. Vérifie le lien reçu ou contacte ton kiné."
+                    : "Impossible de charger ton programme. Recharge la page ou contacte ton kiné.")))
+                .getProgrammePatient(ID);
+        }
+
+        function textRessenti(r) {
+            const v = x => x === null || x === undefined ? '–' : x;
+            return 'Effort ' + v(r.effort) + '/10 · Douleur ' + v(r.douleur) + '/10'
+                + (r.sommeil === null || r.sommeil === undefined ? '' : ' · Sommeil ' + r.sommeil + '/10')
+                + (r.note ? ' · « ' + r.note + ' »' : '');
+        }
+
+        // Case "Séance terminée" + ressenti (semaine en cours)
+        function zoneSeance(sid, i, faite, ressenti0) {
+            const wrap = el('div');
+            const box = el('label', 'done-box');
+            const cb = el('input');
+            cb.type = 'checkbox';
+            cb.id = 'seance-' + (i + 1);
+            cb.checked = faite;
+            box.classList.toggle('done', faite);
+            box.append(cb, el('span', '', 'Séance terminée'));
+            const zone = el('div', 'ress');
+            let r = ressenti0 || null;
+
+            function formulaire() {
+                const f = el('div', 'ress-form');
+                f.append(el('div', 'ress-titre', 'Ton ressenti sur cette séance'));
+                const effort = curseur('Effort ressenti', 'Facile', 'Très dur', true);
+                const douleur = curseur('Douleur / gêne', 'Aucune', 'Très forte', true);
+                const sommeil = curseur('Sommeil la veille de la séance', 'Très mauvais', 'Excellent', true);
+                const note = el('textarea');
+                note.placeholder = 'Un mot sur cette séance ? (facultatif)';
+                note.maxLength = 500;
+                note.style.minHeight = '64px';
+                if (r) {
+                    if (r.effort !== null) effort.fixer(r.effort);
+                    if (r.douleur !== null) douleur.fixer(r.douleur);
+                    if (r.sommeil !== null && r.sommeil !== undefined) sommeil.fixer(r.sommeil);
+                    note.value = r.note || '';
+                }
+                const save = el('button', 'btn', 'Enregistrer mon ressenti');
+                save.type = 'button';
+                const later = el('button', 'btn sec', r ? 'Annuler' : 'Plus tard');
+                later.type = 'button';
+                const verifier = () => { save.disabled = !(effort.touche() && douleur.touche() && sommeil.touche()); };
+                effort.onTouche = verifier; douleur.onTouche = verifier; sommeil.onTouche = verifier;
+                verifier();
+                later.addEventListener('click', () => rendre('resume'));
+                save.addEventListener('click', () => {
+                    save.disabled = true;
+                    save.textContent = 'Enregistrement…';
+                    const donnees = { effort: effort.valeur(), douleur: douleur.valeur(), sommeil: sommeil.valeur(), note: note.value.trim() };
+                    run()
+                        .withSuccessHandler(() => {
+                            r = { effort: Number(donnees.effort), douleur: Number(donnees.douleur), sommeil: Number(donnees.sommeil), note: donnees.note };
+                            rendre('resume');
+                            toast('Ressenti enregistré ✓');
+                        })
+                        .withFailureHandler(() => {
+                            save.textContent = 'Enregistrer mon ressenti';
+                            verifier();
+                            toast('Enregistrement impossible, réessaie');
+                        })
+                        .enregistrerRessenti(ID, sid, donnees);
+                });
+                const act = el('div', 'ress-actions');
+                act.append(save, later);
+                f.append(effort, douleur, sommeil, note, act);
+                return f;
+            }
+
+            function rendre(mode) {
+                zone.replaceChildren();
+                if (!cb.checked) return;
+                if (mode === 'form') {
+                    zone.append(formulaire());
+                    zone.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    return;
+                }
+                if (r) {
+                    const ligne = el('div', 'ress-resume');
+                    const mod = el('button', '', 'Modifier');
+                    mod.type = 'button';
+                    mod.addEventListener('click', () => rendre('form'));
+                    ligne.append(el('span', '', textRessenti(r)), mod);
+                    zone.append(ligne);
+                } else {
+                    const b = el('button', 'ress-btn', '＋ Donner mon ressenti');
+                    b.type = 'button';
+                    b.addEventListener('click', () => rendre('form'));
+                    zone.append(b);
+                }
+            }
+
+            cb.addEventListener('change', () => {
+                const fait = cb.checked;
+                box.classList.toggle('done', fait);
+                majCompteur();
+                rendre(fait && !r ? 'form' : 'resume');
+                run()
+                    .withFailureHandler(() => {
+                        cb.checked = !fait;
+                        box.classList.toggle('done', !fait);
+                        majCompteur();
+                        rendre('resume');
+                        toast("Enregistrement impossible, réessaie");
+                    })
+                    .cocherSeance(ID, sid, fait);
+            });
+            rendre('resume');
+            wrap.append(box, zone);
+            return wrap;
+        }
+
+        // Séance d'une semaine passée : lecture seule
+        function lectureSeance(faite, r) {
+            const d = el('div', 'lecture');
+            d.textContent = (faite ? '✅ Réalisée' : 'Non cochée') + (r ? ' — ' + textRessenti(r) : '');
+            return d;
+        }
+
+        function carteSeance(s, i, o) {
+            const sid = 's' + (i + 1);
+            const card = el('div', 'card');
+            const hd = el('div', 'session-header');
+            hd.append(el('span', 'session-tag', s.tag), s.rpe ? el('span', 'rpe-badge', s.rpe) : el('span'));
+            card.append(hd, el('div', 'session-title', s.titre));
+            s.etapes.forEach(e => {
+                const st = el('div', 'step');
+                st.append(el('span', 'step-label ' + (e.type === 'navy' ? 'label-navy' : 'label-orange'), e.label), el('span', '', e.texte));
+                card.append(st);
+            });
+            const faite = o.faites.indexOf(sid) >= 0, r = o.ressentis[sid] || null;
+            card.append(o.lecture ? lectureSeance(faite, r) : zoneSeance(sid, i, faite, r));
+            return card;
+        }
+
+        function afficher(d) {
+            app.replaceChildren();
+            if (d.attente) {
+                app.append(header('Bienvenue', d.nom, ''), el('div', 'card empty', "Ton programme est en préparation. Ton kiné te préviendra dès qu'il est prêt 🙌"));
+                return;
+            }
+            const prog = d.programme || { seances: [] };
+            nbSeances = prog.seances.length;
+            app.append(header('Semaine ' + d.semaine, d.nom, 'Coche chaque séance une fois terminée'));
+
+            if (prog.fc_cible) {
+                const c = el('div', 'card card-hr'), g = el('div');
+                g.append(el('span', 'hr-title', 'Zone cible'), el('span', 'hr-value', prog.fc_cible));
+                c.append(g);
+                app.append(c);
+            }
+            if (prog.focus) {
+                const f = el('div', 'focus-banner');
+                f.append(el('div', 'focus-title', '🎯 Focus de la semaine'), el('div', '', prog.focus));
+                app.append(f);
+            }
+
+            prog.seances.forEach((s, i) => app.append(carteSeance(s, i, { faites: d.faites, ressentis: d.ressentis, lecture: false })));
+
+            if (prog.securite) {
+                const s = el('div', 'safety-card');
+                s.append(el('div', 'safety-title', 'À retenir'), el('div', '', prog.securite));
+                app.append(s);
+            }
+            app.append(blocDebrief(d), blocProgression(d));
+            const passees = blocPassees(d);
+            if (passees) app.append(passees);
+        }
+
+        function nbFaites() { return document.querySelectorAll('.done-box input:checked').length; }
+        function majCompteur() {
+            const c = document.getElementById('compteur');
+            if (c) c.textContent = nbFaites() + '/' + nbSeances + ' séances cochées';
+        }
+
+        /* ---------- Débrief hebdomadaire ---------- */
+        function blocDebrief(d) {
+            const box = el('div', 'card debrief');
+            if (d.debrief) {
+                box.append(el('div', 'ok-box', "✅ Débrief envoyé. Ton prochain programme arrive bientôt !"));
+                return box;
+            }
+            const ouvrir = el('button', 'btn', 'Faire mon débrief de la semaine');
+            box.append(ouvrir);
+            ouvrir.addEventListener('click', () => {
+                box.replaceChildren();
+                box.append(el('h2', '', 'Ton débrief'), el('p', 'hint', 'Quelques secondes pour adapter ta prochaine semaine.'));
+                const compteur = el('p', 'hint', '');
+                compteur.id = 'compteur';
+                const douleur = curseur('Douleur / gêne', 'Aucune', 'Très forte');
+                const fatigue = curseur('Fatigue', 'Frais', 'Épuisé');
+                const diff = curseur('Difficulté ressentie', 'Facile', 'Très dur');
+                const com = el('textarea');
+                com.placeholder = "Un commentaire ? Sensations, douleurs, contraintes de la semaine prochaine…";
+                const envoyer = el('button', 'btn', 'Envoyer mon débrief');
+                envoyer.style.marginTop = '12px';
+                box.append(compteur, douleur, fatigue, diff, com, envoyer);
+                majCompteur();
+                envoyer.addEventListener('click', () => {
+                    envoyer.disabled = true;
+                    envoyer.textContent = 'Envoi en cours…';
+                    run()
+                        .withSuccessHandler(() => {
+                            box.replaceChildren(el('div', 'ok-box', "✅ Merci ! Ton prochain programme arrive bientôt."));
+                        })
+                        .withFailureHandler(() => {
+                            envoyer.disabled = false;
+                            envoyer.textContent = 'Envoyer mon débrief';
+                            toast("Envoi impossible, réessaie");
+                        })
+                        .enregistrerDebrief(ID, { douleur: douleur.valeur(), fatigue: fatigue.valeur(), difficulte: diff.valeur(), commentaire: com.value });
+                });
+            });
+            return box;
+        }
+
+        /* ---------- Historique : progression + semaines précédentes ---------- */
+        function blocProgression(d) {
+            const card = el('div', 'card');
+            card.append(el('h2', '', '📈 Ma progression'));
+            if (!d.historique.length) {
+                card.append(el('p', 'hint', 'Ton graphique apparaîtra après ton premier débrief.'));
+                return card;
+            }
+            card.append(graphique(d.historique));
+            const ass = el('div', 'assid');
+            ass.append(el('div', 'assid-titre', 'Séances réalisées'));
+            d.historique.slice(-8).forEach(h => {
+                const l = el('div', 'assid-ligne');
+                const piste = el('div', 'assid-piste'), barre = el('div', 'assid-barre');
+                barre.style.width = (h.prevues > 0 ? Math.min(100, Math.round(100 * h.faites / h.prevues)) : 0) + '%';
+                piste.append(barre);
+                l.append(el('span', 'lab', 'S' + h.semaine), piste, el('span', 'val', h.faites + '/' + h.prevues));
+                ass.append(l);
+            });
+            card.append(ass);
+            return card;
+        }
+
+        function blocPassees(d) {
+            if (!d.passees || !d.passees.length) return null;
+            const card = el('div', 'card');
+            card.append(el('h2', '', '🗂 Semaines précédentes'));
+            d.passees.forEach(sem => {
+                const btn = el('button', 'week-btn', 'Semaine ' + sem + ' ▸');
+                btn.type = 'button';
+                const zone = el('div', 'week-zone');
+                zone.hidden = true;
+                let charge = false;
+                btn.addEventListener('click', () => {
+                    zone.hidden = !zone.hidden;
+                    btn.textContent = 'Semaine ' + sem + (zone.hidden ? ' ▸' : ' ▾');
+                    if (zone.hidden || charge) return;
+                    charge = true;
+                    zone.append(el('p', 'hint', 'Chargement…'));
+                    run()
+                        .withSuccessHandler(r => {
+                            zone.replaceChildren();
+                            const p = r.programme || { seances: [] };
+                            if (p.focus) {
+                                const f = el('div', 'focus-banner');
+                                f.append(el('div', 'focus-title', '🎯 Focus de la semaine'), el('div', '', p.focus));
+                                zone.append(f);
+                            }
+                            p.seances.forEach((s, i) => zone.append(carteSeance(s, i, { faites: r.faites, ressentis: r.ressentis, lecture: true })));
+                        })
+                        .withFailureHandler(() => {
+                            charge = false;
+                            zone.replaceChildren(el('p', 'hint', 'Impossible de charger cette semaine.'));
+                        })
+                        .getSemainePatient(ID, sem);
+                });
+                card.append(btn, zone);
+            });
+            return card;
+        }
+    </script>
+</body>
+</html>
